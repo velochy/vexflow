@@ -1,0 +1,24 @@
+{
+  name: 'vexflow-proportional-spacing',
+  version: '0.0.0',
+  homepage: 'https://github.com/velochy/vexflow',
+  authors: [
+    'Margus Niitsoo <velochy@gmx.net> (author of package)',
+    'Mohit Muthanna Cheppudira (original author of vexflow)'
+  ],
+  description: 'Vexflow butchered to have proportional spacing',
+  main: 'build/vexflow/vexflow-min.js',
+  keywords: [
+    'vexflow',
+    'music',
+    'notes'
+  ],
+  license: 'MIT',
+  ignore: [
+    '**/.*',
+    'node_modules',
+    'bower_components',
+    'test',
+    'tests'
+  ]
+}
