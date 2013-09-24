@@ -431,8 +431,8 @@ Vex.Flow.Formatter.prototype.preFormat = function(justifyWidth, rendering_contex
   if (justifyWidth > 0) {
     // Pass 2: Take leftover width, and distribute it to proportionately to
     // all notes.
-    var remaining_x = initial_justify_width - (x + prev_width);
-    var leftover_pixels_per_tick = remaining_x / (this.totalTicks.value() * contexts.resolutionMultiplier);
+    var remaining_x = initial_justify_width;// - (x + prev_width);
+    var leftover_pixels_per_tick = remaining_x / (this.totalTicks.value());
     var prev_tick = 0;
     var accumulated_space = 0;
 
@@ -441,7 +441,7 @@ Vex.Flow.Formatter.prototype.preFormat = function(justifyWidth, rendering_contex
       var context = contextMap[tick];
       var tick_space = (tick - prev_tick) * leftover_pixels_per_tick;
       accumulated_space = accumulated_space + tick_space;
-      context.setX(context.getX() + accumulated_space);
+      context.setX(accumulated_space);
       prev_tick = tick;
     }
   }
