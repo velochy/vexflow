@@ -1,6 +1,6 @@
 {
   "name": "vexflow-proportional-spacing",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "homepage": "https://github.com/velochy/vexflow",
   "authors": [
     "Margus Niitsoo <velochy@gmx.net> (author of package)",
@@ -15,10 +15,8 @@
   ],
   "license": "MIT",
   "ignore": [
-    "**/.*",
-    "node_modules",
-    "bower_components",
-    "test",
+    "**/",
+    "**.sh",
     "tests"
   ]
 }

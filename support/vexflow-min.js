@@ -1,1 +1,1 @@
-/home/velochy/vexflow/build/vexflow/vexflow-min.js
+/home/velochy/vexflow/vexflow-min.js

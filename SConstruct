@@ -35,5 +35,6 @@ Export("dbg opt")
 # Build VexFlow
 SConscript("src/SConstruct", variant_dir="build/vexflow", duplicate=0)
 
+
 # Copy over tests for distribution
 cpdir_with_cleanup("build/tests", "tests", env)
