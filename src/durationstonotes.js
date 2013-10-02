@@ -64,6 +64,7 @@ Vex.Flow.printRhythmFromDurations = function(durations,beat_boundaries,bar_durat
  
   var sum = 0; // Duration up to the current point
   var vfnotes = []; // The notes to be rendered
+  var beatNotes = []; // The on-beat notes (for returning later)
   var ties = []; // Note ties
   var beams =[]; // Note beams 
   var cbeam = []; // List of notes under the current beam
@@ -73,7 +74,7 @@ Vex.Flow.printRhythmFromDurations = function(durations,beat_boundaries,bar_durat
   for(var i=0;i<durInTicks.length;i++) { 
       var clen = durInTicks[i];
       var cties = [];
-      
+
       // Choose the notes that would compose the duration
       while (clen>0) {
 
@@ -86,6 +87,8 @@ Vex.Flow.printRhythmFromDurations = function(durations,beat_boundaries,bar_durat
 
           cties.push(vfnotes.length);
           vfnotes.push(createNote(sym["name"]));
+          if (beatNotes.length<=i) 
+              beatNotes.push(vfnotes[vfnotes.length-1]);
     
           // If first note in the bar, remmember it so the barline could be drawn later
           if (sum>0 && sum%barInTicks == 0) { barBeginners.push(vfnotes[vfnotes.length-1]); }
@@ -158,7 +161,7 @@ Vex.Flow.printRhythmFromDurations = function(durations,beat_boundaries,bar_durat
 
 
   var note_positions=[];
-  voice.tickables.forEach(function(t) { note_positions.push(Math.round(t.getAbsoluteX())); });
+  beatNotes.forEach(function(t) { note_positions.push(Math.round(t.getAbsoluteX())); });
 
   return note_positions;
 };
