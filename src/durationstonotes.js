@@ -60,6 +60,7 @@ Vex.Flow.printRhythmFromDurations = function(durations,beat_boundaries,bar_durat
   }
 
   var nextBound = boundsInTicks[0];
+  var prevBound = 0;
   var nextBoundIndex = 0;
  
   var sum = 0; // Duration up to the current point
@@ -80,10 +81,12 @@ Vex.Flow.printRhythmFromDurations = function(durations,beat_boundaries,bar_durat
 
           // Respect bar and (to lesser degree) beat boundaries
           var sym = getSym(Math.min(clen, // Never take a note longer than required to complete the current duration
-                    sum<nextBound? // Already mid-beat?
+                    sum>prevBound? // Already mid-beat?
                         nextBound-sum: // Yes - respect the beat boundary
                         barInTicks-(sum%barInTicks) // No - only respect bar boundary
                 ));
+
+          alert(sum+" "+clen+" "+nextBound);
 
           cties.push(vfnotes.length);
           vfnotes.push(createNote(sym["name"]));
@@ -109,6 +112,7 @@ Vex.Flow.printRhythmFromDurations = function(durations,beat_boundaries,bar_durat
 
           // If we crossed an emphasis boundary, increment the emphasis counter
           if (sum >= nextBound) {
+            prevBound = nextBound;
             nextBoundIndex = (nextBoundIndex+1)%boundsInTicks.length;
             nextBound += boundsInTicks[nextBoundIndex];
           }
