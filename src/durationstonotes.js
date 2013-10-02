@@ -8,6 +8,7 @@
 
 // printRhythmFromDurations - print a line of rhythm notation given durations
 // durations is a list of durations such as [1,0.5,0.5,1,1]
+// rests is an array specifying which durations correspond to rests, like [0, 3] or []
 // beat_boundaries describes how the bar is to be divided rhytmically
 //      for instance [2,2] or [1.5,1.5,1] or [1,1,1,1]
 //      (the latter is equivalent to [1] as the pattern is taken as repeating)
@@ -17,13 +18,12 @@
 
 // NB! This is currently built for a very specific use case (for noting just rhythm) but most of this code should be straightforward to generalise for anyone interested. 
 
-Vex.Flow.printRhythmFromDurations = function(durations,beat_boundaries,bar_duration,x,y,width,ctx) {
+Vex.Flow.printRhythmFromDurations = function(durations,rests,beat_boundaries,bar_duration,x,y,width,ctx) {
 
   var TICKS_PER_PULSE = 8*3*5;  // Because float arithmetic is a pain in the behind, turn the durations into integers
   var durInTicks = []; durations.forEach(function(d) { durInTicks.push(Math.round(d*TICKS_PER_PULSE)); });
   var barInTicks = Math.round(bar_duration*TICKS_PER_PULSE);
   var boundsInTicks = [];  beat_boundaries.forEach(function(d) { boundsInTicks.push(Math.round(d*TICKS_PER_PULSE)); });
-
 
   note_names = ["w","h","q","8","16","32"];
   function getSym(x) {
@@ -75,10 +75,10 @@ Vex.Flow.printRhythmFromDurations = function(durations,beat_boundaries,bar_durat
   for(var i=0;i<durInTicks.length;i++) { 
       var clen = durInTicks[i];
       var cties = [];
+      var isRest = (rests.indexOf(i)!=-1);
 
       // Choose the notes that would compose the duration
       while (clen>0) {
-
           // Respect bar and (to lesser degree) beat boundaries
           var sym = getSym(Math.min(clen, // Never take a note longer than required to complete the current duration
                     sum>prevBound? // Already mid-beat?
@@ -86,7 +86,9 @@ Vex.Flow.printRhythmFromDurations = function(durations,beat_boundaries,bar_durat
                         barInTicks-(sum%barInTicks) // No - only respect bar boundary
                 ));
 
-          cties.push(vfnotes.length);
+          if (isRest) sym["name"]+="r";
+          else cties.push(vfnotes.length); // Ties are only for non-rests
+
           vfnotes.push(createNote(sym["name"]));
 
           // If this is the first note for the duration, mark it down
@@ -99,7 +101,7 @@ Vex.Flow.printRhythmFromDurations = function(durations,beat_boundaries,bar_durat
           clen -= sym["duration"];
  
           // Is a beam required?
-          if (sym["duration"]<TICKS_PER_PULSE) {
+          if (sym["duration"]<TICKS_PER_PULSE && ! isRest) {
               cbeam.push(vfnotes[vfnotes.length-1]);
           }   
 
@@ -159,9 +161,9 @@ Vex.Flow.printRhythmFromDurations = function(durations,beat_boundaries,bar_durat
   // Draw bar lines
   barBeginners.forEach(function(nid) { 
       var delta = Math.min((vfnotes[nid].getAbsoluteX()-vfnotes[nid-1].getAbsoluteX()-vfnotes[nid-1].glyph.head_width)/2, 5);
-      ctx.fillRect(Math.round(vfnotes[nid].getAbsoluteX())-delta,y+5,2,45);
+      ctx.fillRect(Math.round(vfnotes[nid].getAbsoluteX())-delta,y+5,1,45);
   });
-  ctx.fillRect(x+width,y+5,2,45);
+  ctx.fillRect(x+width,y+5,1,45);
 
 
   var note_positions=[];
