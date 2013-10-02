@@ -86,15 +86,14 @@ Vex.Flow.printRhythmFromDurations = function(durations,beat_boundaries,bar_durat
                         barInTicks-(sum%barInTicks) // No - only respect bar boundary
                 ));
 
-          alert(sum+" "+clen+" "+nextBound);
-
           cties.push(vfnotes.length);
           vfnotes.push(createNote(sym["name"]));
-          if (beatNotes.length<=i) 
-              beatNotes.push(vfnotes[vfnotes.length-1]);
+
+          // If this is the first note for the duration, mark it down
+          if (beatNotes.length<=i) { beatNotes.push(vfnotes[vfnotes.length-1]); }
     
           // If first note in the bar, remmember it so the barline could be drawn later
-          if (sum>0 && sum%barInTicks == 0) { barBeginners.push(vfnotes[vfnotes.length-1]); }
+          if (sum>0 && sum%barInTicks == 0) { barBeginners.push(vfnotes.length-1); }
 
           sum += sym["duration"];
           clen -= sym["duration"];
@@ -158,8 +157,9 @@ Vex.Flow.printRhythmFromDurations = function(durations,beat_boundaries,bar_durat
  
 
   // Draw bar lines
-  barBeginners.forEach(function(note) {  
-      ctx.fillRect(Math.round(note.getAbsoluteX())-3,y+5,2,45);
+  barBeginners.forEach(function(nid) { 
+      var delta = Math.min((vfnotes[nid].getAbsoluteX()-vfnotes[nid-1].getAbsoluteX()-vfnotes[nid-1].glyph.head_width)/2, 5);
+      ctx.fillRect(Math.round(vfnotes[nid].getAbsoluteX())-delta,y+5,2,45);
   });
   ctx.fillRect(x+width,y+5,2,45);
 
