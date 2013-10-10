@@ -1,0 +1,15 @@
+"""
+VexFlow / TabDiv Build Script
+Requires: SCons, Git, and Google Closure Compiler
+
+Copyright Margus Niitsoo 2013
+"""
+
+from vexflow_scons import *
+
+vexchord_sources = [
+    "vexchord.js"
+    ]
+
+Import('dbg opt')
+build_and_stamp("vexchord-min.js", vexchord_sources, opt);

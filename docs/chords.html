@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>The Little Chord Chart</title>
+    <link href='http://fonts.googleapis.com/css?family=Lobster+Two|Bowlby+One+SC|Swanky+and+Moo+Moo|Marvel' rel='stylesheet' type='text/css'>
+	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+    <script src="../vexchord-min.js"></script>
+    <script src="../vexchord/chord-charts.js"></script>
+
+<script>
+
+function init() {
+  var container = $("#container");
+
+    var section = $("#diagrams");
+
+    for (var j = 0; j < chord_charts.length; ++j) {
+      chord_charts[j].tuning=[];
+      var c = 4;//1+3*j/ chord_charts.length;
+      section.append(createChordChartWithName(chord_charts[j],c*24,c*44));
+    }
+
+    container.append(section);
+
+}
+
+$(function() { init() });
+
+</script>
+</head>
+
+<body>
+  <center>
+    <h1>The Little Chord Chart</h1>
+  </center>
+
+  <div id="diagrams"></div>
+
+</body>
+</html>
