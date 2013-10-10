@@ -122,7 +122,7 @@ ChordBox.prototype.draw = function() {
   var fret_spacing = this.fret_spacing;
 
   this.canvas.save();
-  this.canvas.font = this.font_size+"pt Arial";
+  this.canvas.font = this.metrics.font_size+"pt Arial";
   this.canvas.textAlign = "center";
 
   // Draw guitar bridge
