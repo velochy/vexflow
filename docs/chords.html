@@ -9,6 +9,39 @@
 
 <script>
 
+// Two utility functions - neither pretty enough to be actually included,
+
+function createChordChartElement(chord_struct,w,h) {
+  var chordcanvas = $('<canvas/>',{width:w,height:h});
+  chordcanvas[0].width=w; chordcanvas[0].height=h;
+  var canvas = chordcanvas[0].getContext('2d');
+
+  var chord = new ChordBox(canvas, 0, 0, w, h);
+
+  chord.setChord(
+      chord_struct.chord,
+      chord_struct.position,
+      chord_struct.bars,
+      chord_struct.position_text,
+      chord_struct.tuning);
+  chord.draw();
+
+  return chordcanvas;
+}
+
+function createChordChartWithName(chord_struct,w,h) {
+  var chordbox = $('<div>').addClass('chordbox').css({width:w+"px"});
+  var chordname = $('<div>').addClass('chordname').css({fontSize: Math.floor(0.32*h)+"px", textAlign:"center", lineHeight:Math.floor(0.32*h)+"px"});
+
+  chordbox.append(chordname);
+  chordbox.append(createChordChartElement(chord_struct,w,0.68*h));
+  chordname.append(chord_struct.name);
+
+  return chordbox;
+}
+
+// Actual drawing
+
 function init() {
   var container = $("#container");
 
