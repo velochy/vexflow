@@ -237,5 +237,13 @@ ChordBox.prototype.lightBar = function(string_from, string_to, fret_num) {
   return this;
 }
 
-/* 
-*/
+function drawVexChordChart(chord_struct,canvas,x,y,w,h) {
+        var chordbox = new ChordBox(canvas, x, y, w, h);
+        chordbox.setChord(
+              chord_struct.chord,
+              chord_struct.position,
+              chord_struct.bars,
+              chord_struct.position_text,
+              chord_struct.tuning);
+        chordbox.draw();
+}
