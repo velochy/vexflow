@@ -30,6 +30,8 @@ Vex.Flow.printRhythmFromDurations = function(durations,rests,beat_boundaries,bar
     var i=0;
     for (var d=4*TICKS_PER_PULSE;d>x;d/=2) i++;
 
+    //console.log("Len: "+x+" base "+d+" pow "+i);
+
     var n = note_names[i];  var ds = d;
     while ( x>=ds+0.5*d ) {
         d*=0.5; ds+=d; n+="d";
@@ -59,6 +61,7 @@ Vex.Flow.printRhythmFromDurations = function(durations,rests,beat_boundaries,bar
     return new Vex.Flow.Beam(vfnotes,true);
   }
 
+  //console.log("Defs");
   var nextBound = boundsInTicks[0];
   var prevBound = 0;
   var nextBoundIndex = 0;
@@ -73,12 +76,14 @@ Vex.Flow.printRhythmFromDurations = function(durations,rests,beat_boundaries,bar
 
   // Iterate over all durations
   for(var i=0;i<durInTicks.length;i++) { 
+      //console.log("Duration "+i);
       var clen = durInTicks[i];
       var cties = [];
       var isRest = (rests.indexOf(i)!=-1);
 
       // Choose the notes that would compose the duration
       while (clen>0) {
+          //console.log("Piece "+clen+" sum "+sum+" "+prevBound+" "+nextBound+" "+barInTicks);
           // Respect bar and (to lesser degree) beat boundaries
           var sym = getSym(Math.min(clen, // Never take a note longer than required to complete the current duration
                     sum>prevBound? // Already mid-beat?
@@ -86,37 +91,47 @@ Vex.Flow.printRhythmFromDurations = function(durations,rests,beat_boundaries,bar
                         barInTicks-(sum%barInTicks) // No - only respect bar boundary
                 ));
 
+          //console.log("Sym",sym);
           if (isRest) sym["name"]+="r";
           else cties.push(vfnotes.length); // Ties are only for non-rests
 
+          //console.log("Sname",sym["name"]);
           vfnotes.push(createNote(sym["name"]));
 
+          //console.log("vfpushed");
           // If this is the first note for the duration, mark it down
           if (beatNotes.length<=i) { beatNotes.push(vfnotes[vfnotes.length-1]); }
     
+          //console.log("bnpushed");
           // If first note in the bar, remmember it so the barline could be drawn later
           if (sum>0 && sum%barInTicks == 0) { barBeginners.push(vfnotes.length-1); }
 
+          //console.log("bbpushed");
           sum += sym["duration"];
           clen -= sym["duration"];
  
+          //console.log("+-");
           // Is a beam required?
           if (sym["duration"]<TICKS_PER_PULSE && ! isRest) {
               cbeam.push(vfnotes[vfnotes.length-1]);
           }   
 
+          //console.log("beam");
           // Did we cross a beat boundary (in which case a beam should end here)
           if (cbeam.length>0 && (sum==nextBound || sym["duration"]>=TICKS_PER_PULSE)) {
             if (cbeam.length>1) beams.push(createBeam(cbeam));
             cbeam=[];
           }
 
+          //console.log("BarBound");
           // If we crossed an emphasis boundary, increment the emphasis counter
-          if (sum >= nextBound) {
+          while (sum >= nextBound) {
             prevBound = nextBound;
             nextBoundIndex = (nextBoundIndex+1)%boundsInTicks.length;
             nextBound += boundsInTicks[nextBoundIndex];
           }
+
+          //console.log("CLEN: "+clen+" duration: "+sym["duration"]);
       }
       // If we decomposed the duration to more than one note, tie them together
       if (cties.length>1) 
@@ -124,9 +139,13 @@ Vex.Flow.printRhythmFromDurations = function(durations,rests,beat_boundaries,bar
               ties.push(createTie(vfnotes[cties[j-1]],vfnotes[cties[j]]));
           }
   } 
+  
+  //console.log("Notes done");
 
   var stave = new Vex.Flow.Stave(x, y, width,{num_lines:0,space_below_staff_ln:0,space_above_staff_ln:1,bottom_text_position:0,top_text_position:0});
   stave.setContext(ctx);
+
+  //console.log("Stave done");
 
   // Create a voice in 4/4
   var voice = new Vex.Flow.Voice({
@@ -135,28 +154,36 @@ Vex.Flow.printRhythmFromDurations = function(durations,rests,beat_boundaries,bar
     resolution: Vex.Flow.RESOLUTION
   });
 
+  //console.log("Voice created");
+
   // Add notes to voice
   voice.addTickables(vfnotes);
 
+  //console.log("Notes in voice");
 
   // Format and justify the notes to 500 pixels
   var formatter = new Vex.Flow.Formatter().
     joinVoices([voice]).formatToStave([voice],stave);
 
+  //console.log("Formatter added");
 
   // Render voice
   voice.draw(ctx, stave);
   
+  //console.log("Voices drawn");
+
   // Draw beams
   beams.forEach(function(beam){
     beam.setContext(ctx).draw();
   });
+  //console.log("Beams drawn");
 
   // Draw ties
   ties.forEach(function(tie){
     tie.setContext(ctx).draw();
   });
  
+  //console.log("Ties drawn");
 
   // Draw bar lines
   barBeginners.forEach(function(nid) { 
@@ -165,6 +192,7 @@ Vex.Flow.printRhythmFromDurations = function(durations,rests,beat_boundaries,bar
   });
   ctx.fillRect(x+width,y+5,1,45);
 
+  //console.log("Barlines drawn");
 
   var note_positions=[];
   beatNotes.forEach(function(t) { note_positions.push(Math.round(t.getAbsoluteX())); });
