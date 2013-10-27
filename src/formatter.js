@@ -469,7 +469,7 @@ Vex.Flow.Formatter.prototype.format = function(voices, justifyWidth, options) {
 }
 
 Vex.Flow.Formatter.prototype.formatToStave = function(voices, stave, options) {
-  var justifyWidth = stave.getNoteEndX() - stave.getNoteStartX() - 10;
+  var justifyWidth = stave.getNoteEndX() - stave.getNoteStartX();
   var opts = {context: stave.getContext()};
   Vex.Merge(opts, options);
   return this.format(voices, justifyWidth, opts);

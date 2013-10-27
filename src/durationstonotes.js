@@ -18,9 +18,10 @@
 
 // NB! This is currently built for a very specific use case (for noting just rhythm) but most of this code should be straightforward to generalise for anyone interested. 
 
-Vex.Flow.printRhythmFromDurations = function(durations,rests,beat_boundaries,bar_duration,x,y,width,ctx) {
+Vex.Flow.printRhythmFromDurations = function(durations,rests,beat_boundaries,bar_duration,beat_value,x,y,width,ctx) {
 
-  var TICKS_PER_PULSE = 8*3*5;  // Because float arithmetic is a pain in the behind, turn the durations into integers
+
+  var TICKS_PER_PULSE = 32*3*5/beat_value;  // Because float arithmetic is a pain in the behind, turn the durations into integers
   var durInTicks = []; durations.forEach(function(d) { durInTicks.push(Math.round(d*TICKS_PER_PULSE)); });
   var barInTicks = Math.round(bar_duration*TICKS_PER_PULSE);
   var boundsInTicks = [];  beat_boundaries.forEach(function(d) { boundsInTicks.push(Math.round(d*TICKS_PER_PULSE)); });
@@ -28,7 +29,7 @@ Vex.Flow.printRhythmFromDurations = function(durations,rests,beat_boundaries,bar
   note_names = ["w","h","q","8","16","32"];
   function getSym(x) {
     var i=0;
-    for (var d=4*TICKS_PER_PULSE;d>x;d/=2) i++;
+    for (var d=beat_value*TICKS_PER_PULSE;d>x;d/=2) i++;
 
     //console.log("Len: "+x+" base "+d+" pow "+i);
 
@@ -144,13 +145,16 @@ Vex.Flow.printRhythmFromDurations = function(durations,rests,beat_boundaries,bar
 
   var stave = new Vex.Flow.Stave(x, y, width,{num_lines:0,space_below_staff_ln:0,space_above_staff_ln:1,bottom_text_position:0,top_text_position:0});
   stave.setContext(ctx);
+  stave.addTimeSignature(bar_duration+"/"+beat_value);
+  stave.setNoteStartX(x+TICKS_PER_PULSE*width/(sum+TICKS_PER_PULSE));
+  stave.draw();
 
   //console.log("Stave done");
 
-  // Create a voice in 4/4
+  // Create a voice 
   var voice = new Vex.Flow.Voice({
     num_beats: Math.round(durations.reduce(function(prev,cur) { return prev+cur; })),
-    beat_value: 4,
+    beat_value: beat_value,
     resolution: Vex.Flow.RESOLUTION
   });
 

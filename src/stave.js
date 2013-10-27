@@ -45,11 +45,13 @@ Vex.Flow.Stave.prototype.init = function(x, y, width, options) {
   this.height =
     (this.options.num_lines + this.options.space_above_staff_ln) *
      this.options.spacing_between_lines_px;
-  this.modifiers.push(
-      new Vex.Flow.Barline(Vex.Flow.Barline.type.SINGLE, this.x)); // beg bar
-  this.modifiers.push(
-      new Vex.Flow.Barline(Vex.Flow.Barline.type.SINGLE,
-      this.x + this.width)); // end bar
+
+  // Disabling bar lines!
+  //this.modifiers.push(
+  //    new Vex.Flow.Barline(Vex.Flow.Barline.type.SINGLE, this.x)); // beg bar
+  //this.modifiers.push(
+  //    new Vex.Flow.Barline(Vex.Flow.Barline.type.SINGLE,
+  //    this.x + this.width)); // end bar
 }
 
 Vex.Flow.Stave.prototype.setNoteStartX = function(x) {

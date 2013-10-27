@@ -4,7 +4,7 @@
   <title>The VexFlow Tutorial</title>
 
   <!-- VexFlow Compiled Source -->
-  <script src="../support/vexflow-min.js"></script>
+  <script src="../vexflow-min.js"></script>
 
   <!-- Support Sources -->
   <script src="../support/jquery.js"></script>
@@ -62,7 +62,7 @@
     <h2>Playing around</h2>
     <div class="description two">
       <div class="example a" example="a">
-        <canvas width=525 height=120></canvas>
+        <canvas width=600 height=120></canvas>
         <p/>
         <script>
   var canvas = $("div.two div.a canvas")[0];
@@ -70,10 +70,10 @@
     Vex.Flow.Renderer.Backends.CANVAS);
   var ctx = renderer.getContext();
   
-  var durations = [1,0.5,0.5,0.5,0.5,0.5,1,0.5,0.5,0.5,0.5,0.5,0.5,4.5];
-  alert(Vex.Flow.printRhythmFromDurations(durations,[3,6],[2],4,0,0,500,ctx));
-  var durations = [0.5,0.25,0.25,0.5,0.5,0.25,0.25,0.5,0.5,0.25,0.25,0.5,0.25,0.25,0.5,0.5,0.25,0.25,0.5,0.5,0.25,0.25];
-  Vex.Flow.printRhythmFromDurations(durations,[1],[1.5,1.5,1],4,0,60,500,ctx);
+  var durations = [1,0.5,0.5,1,0.5,0.5,1,0.5,1,0.5,0.5,0.5,0.5,0.5,2,0.5,6.5];
+  Vex.Flow.printRhythmFromDurations(durations,[3,6],[1,2],6,8,0,0,600,ctx);
+  var durations = [0.5,0.25,0.25,0.5,0.5,0.25,0.25,0.5,0.5,0.25,0.25,0.5,0.25,0.25,0.5,0.5,0.25,0.25,0.5,0.5,0.25,0.25,4];
+  Vex.Flow.printRhythmFromDurations(durations,[1],[1.5,1.5,1],4,4,0,60,600,ctx);
   
        </script></p>
       </div>

@@ -237,7 +237,7 @@ Vex.Flow.Note.prototype.getAbsoluteX = function(x) {
   // position note to left edge of tick context.
   var x = this.tickContext.getX();
   // add padding at beginning of stave
-  if (this.stave) x += this.stave.getNoteStartX() + 12;
+  if (this.stave) x += this.stave.getNoteStartX() ;
 
   return x;
 }
