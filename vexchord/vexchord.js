@@ -46,7 +46,7 @@ CanvasRenderingContext2D.prototype.text = function(x,y,txt) {
 CanvasRenderingContext2D.prototype.attr = function(a,val)  {
   if (a=="fill") {
       this.save();
-      this.fillStyle = val;
+      //this.fillStyle = val;
       this.fill();
       this.restore();
   }

@@ -15,7 +15,8 @@ function createChordChartElement(chord_struct,w,h) {
   var chordcanvas = $('<canvas/>',{width:w,height:h});
   chordcanvas[0].width=w; chordcanvas[0].height=h;
   var canvas = chordcanvas[0].getContext('2d');
- 
+
+  canvas.strokeStyle=canvas.fillStyle="#040404"; 
   drawVexChordChart(chord_struct,canvas,0,0,w,h);
 
   return chordcanvas;

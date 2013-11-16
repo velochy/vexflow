@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>The VexFlow Tutorial</title>
+  <title>Durations to notes demo</title>
 
   <!-- VexFlow Compiled Source -->
   <script src="../vexflow-min.js"></script>
@@ -59,13 +59,11 @@
 </head>
 
 <body>
-    <h2>Playing around</h2>
-    <div class="description two">
-      <div class="example a" example="a">
+    <h2>Exammples</h2>
         <canvas width=600 height=120></canvas>
         <p/>
         <script>
-  var canvas = $("div.two div.a canvas")[0];
+  var canvas = $("canvas")[0];
   var renderer = new Vex.Flow.Renderer(canvas,
     Vex.Flow.Renderer.Backends.CANVAS);
   var ctx = renderer.getContext();
@@ -76,8 +74,6 @@
   Vex.Flow.printRhythmFromDurations(durations,[1],[1.5,1.5,1],4,4,0,60,600,ctx);
   
        </script></p>
-      </div>
-      </div>
 </body>
 
 </html>

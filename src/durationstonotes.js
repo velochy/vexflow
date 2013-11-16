@@ -20,8 +20,8 @@
 
 Vex.Flow.printRhythmFromDurations = function(durations,rests,beat_boundaries,bar_duration,beat_value,x,y,width,ctx) {
 
-
   var TICKS_PER_PULSE = 32*3*5/beat_value;  // Because float arithmetic is a pain in the behind, turn the durations into integers
+  var TICKS_PER_BEAT = 32*3*5/4; // Beat is always in quarter notes - useful to keep for checking if beams should be drawn.
   var durInTicks = []; durations.forEach(function(d) { durInTicks.push(Math.round(d*TICKS_PER_PULSE)); });
   var barInTicks = Math.round(bar_duration*TICKS_PER_PULSE);
   var boundsInTicks = [];  beat_boundaries.forEach(function(d) { boundsInTicks.push(Math.round(d*TICKS_PER_PULSE)); });
@@ -113,13 +113,13 @@ Vex.Flow.printRhythmFromDurations = function(durations,rests,beat_boundaries,bar
  
           //console.log("+-");
           // Is a beam required?
-          if (sym["duration"]<TICKS_PER_PULSE && ! isRest) {
+          if (sym["duration"]<TICKS_PER_BEAT && ! isRest) {
               cbeam.push(vfnotes[vfnotes.length-1]);
           }   
 
           //console.log("beam");
           // Did we cross a beat boundary (in which case a beam should end here)
-          if (cbeam.length>0 && (sum==nextBound || sym["duration"]>=TICKS_PER_PULSE)) {
+          if (cbeam.length>0 && (sum==nextBound || sym["duration"]>=TICKS_PER_BEAT)) {
             if (cbeam.length>1) beams.push(createBeam(cbeam));
             cbeam=[];
           }
