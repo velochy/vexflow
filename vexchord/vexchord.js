@@ -38,8 +38,12 @@ CanvasRenderingContext2D.prototype.rect = function(x,y,w,h,r) {
   return this;
 } 
 
-CanvasRenderingContext2D.prototype.text = function(x,y,txt) {
+CanvasRenderingContext2D.prototype.text = function(x,y,txt,color,size) {
+  this.save();
+  if (color) this.fillStyle = color;
+  if (size) this.font = Math.round(size)+"pt Arial";
   this.fillText(txt, x, y);
+  this.restore();
   return this;
 } 
 
@@ -63,7 +67,7 @@ CanvasRenderingContext2D.prototype.attr = function(a,val)  {
 
 // Chord functionality 
 
-ChordBox = function(canvas, x, y, width, height) {
+ChordBox = function(canvas, x, y, width, height, opts) {
   this.canvas = canvas;
   this.x = x;
   this.y = y;
@@ -80,8 +84,13 @@ ChordBox = function(canvas, x, y, width, height) {
     font_size: Math.ceil(this.width / 9),
     bar_shift_x: this.width / 28,
     bridge_stroke_width: Math.ceil(this.height / 36),
-    chord_fill: "#404040"
+    chord_fill: "#404040",
+    finger_color: "#FFFFFF"
   };
+  
+  for(item in opts) {
+    this.metrics[item] = opts[item];
+  }
 
   this.spacing = this.width / (this.num_strings);
   this.fret_spacing = (this.height-this.metrics.bridge_stroke_width)  / (this.num_frets + 2);
@@ -123,6 +132,8 @@ ChordBox.prototype.draw = function() {
 
   this.canvas.save();
   this.canvas.font = this.metrics.font_size+"pt Arial";
+  //this.canvas.fillStyle = chord_fill;
+  //this.canvas.lineStyle = line_color;
   this.canvas.textAlign = "center";
 
   // Draw guitar bridge
@@ -169,7 +180,7 @@ ChordBox.prototype.draw = function() {
 
   // Draw chord
   for (var i = 0; i < this.chord.length; ++i) {
-    this.lightUp(this.chord[i][0], this.chord[i][1]);
+    this.lightUp(this.chord[i][0], this.chord[i][1], this.chord[i][2]);
   }
 
   // Draw bars
@@ -182,7 +193,7 @@ ChordBox.prototype.draw = function() {
   this.canvas.restore();
 }
 
-ChordBox.prototype.lightUp = function(string_num, fret_num) {
+ChordBox.prototype.lightUp = function(string_num, fret_num, finger) {
   string_num = this.num_strings - string_num;
 
   var shift_position = 0;
@@ -207,9 +218,17 @@ ChordBox.prototype.lightUp = function(string_num, fret_num) {
  
   if (!mute) {
     var c = this.canvas.circle(x, y-Math.floor(this.fret_spacing/2), this.metrics.circle_radius)
-    if (fret_num > 0) c.attr("fill", this.metrics.chord_fill);
+    if (fret_num > 0) {
+      c.attr("fill", this.metrics.chord_fill);
+      if (finger) {
+        this.canvas.text(x, y-(this.fret_spacing-0.8*this.metrics.font_size)/2, ""+finger, 
+                this.metrics.finger_color, 0.8*this.metrics.font_size )
+          .attr({"font-size": this.metrics.font_size});
+      }
+    }
   } else {
-    c = this.canvas.text(x, y-(this.fret_spacing-this.metrics.font_size)/2, "X").attr({"font-size": this.metrics.font_size});
+    c = this.canvas.text(x, y-(this.fret_spacing-this.metrics.font_size)/2, "X")
+        .attr({"font-size": this.metrics.font_size});
   }
 
   return this;
@@ -237,8 +256,8 @@ ChordBox.prototype.lightBar = function(string_from, string_to, fret_num) {
   return this;
 }
 
-function drawVexChordChart(chord_struct,canvas,x,y,w,h) {
-        var chordbox = new ChordBox(canvas, x, y, w, h);
+function drawVexChordChart(chord_struct,canvas,x,y,w,h, opts) {
+        var chordbox = new ChordBox(canvas, x, y, w, h, opts);
         chordbox.setChord(
               chord_struct.chord,
               chord_struct.position,
