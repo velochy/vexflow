@@ -92,15 +92,15 @@ ChordBox = function(canvas, x, y, width, height, opts) {
     this.metrics[item] = opts[item];
   }
 
-  this.spacing = this.width / (this.num_strings);
+  this.spacing = this.width / (this.num_strings+1);
   this.fret_spacing = (this.height-this.metrics.bridge_stroke_width)  / (this.num_frets + 2);
 
 
-  this.metrics.circle_radius=0.8*(this.fret_spacing/2);
+  this.metrics.circle_radius=0.9*Math.min(this.fret_spacing,this.spacing)/2;
   this.metrics.font_size = this.metrics.circle_radius*2;
 
   // Add room on sides for finger positions on 1. and 6. string
-  this.x += this.spacing/2;
+  this.x += this.spacing;
   this.y += this.fret_spacing + this.metrics.bridge_stroke_width;
 
   // Content
@@ -144,8 +144,8 @@ ChordBox.prototype.draw = function() {
       attr("stroke-width", this.metrics.bridge_stroke_width);
   } else {
     // Draw position number
-    this.canvas.text(this.x - (this.spacing / 2) - this.metrics.text_shift_x,
-                    this. y + (this.fret_spacing / 2) +
+    this.canvas.text(this.x - (this.spacing) + this.metrics.text_shift_x,
+                    this. y + (1.2*this.fret_spacing) +
                     this.metrics.text_shift_y +
                     (this.fret_spacing * this.position_text),
                     this.position).attr("font-size", this.metrics.font_size);
@@ -187,7 +187,8 @@ ChordBox.prototype.draw = function() {
   for (var i = 0; i < this.bars.length; ++i) {
     this.lightBar(this.bars[i].from_string,
                   this.bars[i].to_string,
-                  this.bars[i].fret);
+                  this.bars[i].fret,
+                  this.bars[i].finger);
   }
 
   this.canvas.restore();
@@ -234,7 +235,7 @@ ChordBox.prototype.lightUp = function(string_num, fret_num, finger) {
   return this;
 }
 
-ChordBox.prototype.lightBar = function(string_from, string_to, fret_num) {
+ChordBox.prototype.lightBar = function(string_from, string_to, fret_num, finger) {
   if (this.position == 1 && this.position_text == 1) {
     fret_num -= this.position_text;
   }
@@ -252,6 +253,13 @@ ChordBox.prototype.lightBar = function(string_from, string_to, fret_num) {
 
   this.canvas.rect(x, y, (x_to - x), (y_to - y), this.metrics.circle_radius).
     attr("fill", this.metrics.chord_fill);
+
+  if (finger) {
+        console.log("FINGER"+finger);
+        this.canvas.text(x+this.metrics.circle_radius, y+(0.8*this.metrics.font_size), ""+finger, 
+                this.metrics.finger_color, 0.8*this.metrics.font_size )
+          .attr({"font-size": this.metrics.font_size});
+      }
 
   return this;
 }

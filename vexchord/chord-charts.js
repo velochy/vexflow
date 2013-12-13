@@ -1,5 +1,11 @@
 chord_charts = [
     {
+      name: 'F#5',
+      chord: [[1, 'x'], [2, 'x'], [3, 'x'], [4, 3], [5, 3], [6, 1]],
+      position: 2,
+      bars: []
+    },
+    {
       name: "A",
       chord: [[1, 0, "a"], [2, 2,"b"], [3, 2, 3], [4, 2], [5, 0, 6], [6, "x"]],
       position: 0,
@@ -25,9 +31,9 @@ chord_charts = [
     },
     {
       name: "B",
-      chord: [[2, 4], [3, 4], [4, 4], [6, "x"]],
+      chord: [[2, 4, 2], [3, 4, 4], [4, 4, 3], [6, "x"]],
       position: 0,
-      bars: [{from_string: 5, to_string: 1, fret: 2}]
+      bars: [{from_string: 5, to_string: 1, fret: 2, finger: 1}]
     },
      {
       name: "B7",
